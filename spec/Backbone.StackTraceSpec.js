@@ -1,4 +1,6 @@
 (function() {
+  var __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   jasmine.Matchers.prototype.toThrowMessageMatching = function(expected) {
     var error, n, result;
@@ -35,7 +37,21 @@
 
   describe('Backbone.StackTrace', function() {
     beforeEach(function() {
-      this.item = new Backbone.Model;
+      var ItemClass;
+      ItemClass = (function(_super) {
+
+        __extends(ItemClass, _super);
+
+        function ItemClass() {
+          ItemClass.__super__.constructor.apply(this, arguments);
+        }
+
+        return ItemClass;
+
+      })(Backbone.Model);
+      this.item = new ItemClass({
+        id: 15
+      });
       this.item.trigger_infinite = function() {
         return this.trigger('infinite');
       };

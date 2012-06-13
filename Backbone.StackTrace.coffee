@@ -6,6 +6,19 @@ window.Backbone.StackTrace =
 
   oldtrigger: Backbone.Events.trigger
 
+  logString: (item, depth, trigger, context) ->
+    className = id = null
+    if context? && context.constructor?
+      matches = className = context.constructor.toString().match /function\s+(\w+)/
+      className = matches[1]
+
+    idString = if context? && context.id? then "##{context.id}" else ''
+
+    contextString = if className? then "#{className}#{idString}: " else ''
+
+    console.log "#{contextString} #{trigger}: #{item} (#{depth})"
+
+
   trigger: ->
     Backbone.StackTrace.stack ||= []
     stack = Backbone.StackTrace.tracer.run()
@@ -14,11 +27,12 @@ window.Backbone.StackTrace =
     Backbone.StackTrace.stack.push stack[3]
 
     if Backbone.StackTrace.verbose == true
-      console.log "#{trigger}: #{stack[3]} (#{Backbone.StackTrace.stack.length})"
+      Backbone.StackTrace.logString stack[3], Backbone.StackTrace.stack.length, trigger, @
 
     if Backbone.StackTrace.stack.length >= Backbone.StackTrace.maxDepth
       _.each Backbone.StackTrace.stack, (item, index) ->
-        console.log "#{trigger}: #{item} (#{index})"
+        Backbone.StackTrace.logString item, index, trigger
+        #console.log "#{trigger}: #{item} (#{index})"
       console.log "Backbone.StackTrace: stack too deep (#{Backbone.StackTrace.stack.length})"
       throw "Backbone.StackTrace: stack too deep (#{Backbone.StackTrace.stack.length})"
     else

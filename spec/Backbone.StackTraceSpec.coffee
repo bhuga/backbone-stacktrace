@@ -28,7 +28,9 @@ jasmine.Matchers::toThrowMessageMatching = (expected) ->
 
 describe 'Backbone.StackTrace', ->
   beforeEach ->
-    @item = new Backbone.Model
+    class ItemClass extends Backbone.Model
+
+    @item = new ItemClass id: 15
     @item.trigger_infinite = ->
       @trigger 'infinite'
 
