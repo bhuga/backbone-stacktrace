@@ -2,6 +2,7 @@ window.Backbone.StackTrace =
   tracer: new printStackTrace.implementation()
 
   maxDepth: 128
+  verbose: true
 
   oldtrigger: Backbone.Events.trigger
 
@@ -10,6 +11,9 @@ window.Backbone.StackTrace =
     stack = Backbone.StackTrace.tracer.run()
 
     Backbone.StackTrace.stack.push stack[3]
+
+    if Backbone.StackTrace.verbose == true
+      console.log "Backbone trigger: #{arguments[0]}: #{stack[3]}"
 
     if Backbone.StackTrace.stack.length >= Backbone.StackTrace.maxDepth
       _.each Backbone.StackTrace.stack, (item, index) ->
