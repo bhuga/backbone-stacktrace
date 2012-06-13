@@ -3,19 +3,20 @@
   window.Backbone.StackTrace = {
     tracer: new printStackTrace.implementation(),
     maxDepth: 128,
-    verbose: true,
+    verbose: false,
     oldtrigger: Backbone.Events.trigger,
     trigger: function() {
-      var stack, _base;
+      var stack, trigger, _base;
       (_base = Backbone.StackTrace).stack || (_base.stack = []);
       stack = Backbone.StackTrace.tracer.run();
+      trigger = arguments[0];
       Backbone.StackTrace.stack.push(stack[3]);
       if (Backbone.StackTrace.verbose === true) {
-        console.log("Backbone trigger: " + arguments[0] + ": " + stack[3]);
+        console.log("" + trigger + ": " + stack[3] + " (" + Backbone.StackTrace.stack.length + ")");
       }
       if (Backbone.StackTrace.stack.length >= Backbone.StackTrace.maxDepth) {
         _.each(Backbone.StackTrace.stack, function(item, index) {
-          return console.log("" + item + " (" + index + ")");
+          return console.log("" + trigger + ": " + item + " (" + index + ")");
         });
         console.log("Backbone.StackTrace: stack too deep (" + Backbone.StackTrace.stack.length + ")");
         throw "Backbone.StackTrace: stack too deep (" + Backbone.StackTrace.stack.length + ")";
