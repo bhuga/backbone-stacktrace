@@ -37,7 +37,7 @@
 
   describe('Backbone.StackTrace', function() {
     beforeEach(function() {
-      var ItemClass;
+      var ItemClass, ItemView;
       ItemClass = (function(_super) {
 
         __extends(ItemClass, _super);
@@ -55,12 +55,37 @@
       this.item.trigger_infinite = function() {
         return this.trigger('infinite');
       };
+      this.item.trigger_other_infinite = function() {
+        return this.trigger('other_infinite');
+      };
       this.item.on('infinite', function() {
+        return this.trigger_other_infinite();
+      });
+      this.item.on('other_infinite', function() {
         return this.trigger_infinite();
       });
       this.item.spy = function() {};
-      return this.item.on('works', function() {
+      this.item.on('works', function() {
         return this.spy();
+      });
+      ItemView = (function(_super) {
+
+        __extends(ItemView, _super);
+
+        function ItemView() {
+          ItemView.__super__.constructor.apply(this, arguments);
+        }
+
+        ItemView.prototype.el = '#test';
+
+        return ItemView;
+
+      })(Backbone.View);
+      this.view = new ItemView({
+        model: this.item
+      });
+      return this.view.on('infinite', function() {
+        return this.trigger('infinite');
       });
     });
     it('should exist', function() {
@@ -71,11 +96,18 @@
       this.item.trigger('works');
       return expect(this.item.spy).toHaveBeenCalled();
     });
-    return it('should raise an error for an infinite trigger loop', function() {
+    it('should raise an error for an infinite trigger loop', function() {
       var item;
       item = this.item;
       return expect(function() {
         return item.trigger('infinite');
+      }).toThrowMessageMatching(/Backbone.StackTrace/);
+    });
+    return it('should identify the model of a view', function() {
+      var view;
+      view = this.view;
+      return expect(function() {
+        return view.trigger('infinite');
       }).toThrowMessageMatching(/Backbone.StackTrace/);
     });
   });

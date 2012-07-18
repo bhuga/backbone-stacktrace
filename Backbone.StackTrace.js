@@ -6,13 +6,10 @@
     verbose: false,
     oldtrigger: Backbone.Events.trigger,
     logString: function(item, depth, trigger, context) {
-      var className, contextString, id, idString, matches;
-      className = id = null;
-      if ((context != null) && (context.constructor != null)) {
-        matches = className = context.constructor.toString().match(/function\s+(\w+)/);
-        className = matches[1];
-      }
-      idString = (context != null) && (context.id != null) ? "#" + context.id : '';
+      var className, contextString, idString, matches, _ref, _ref2;
+      matches = context != null ? (_ref = context.constructor) != null ? (_ref2 = _ref.toString()) != null ? _ref2.match(/function\s+(\w+)/) : void 0 : void 0 : void 0;
+      className = matches != null ? matches[1] : void 0;
+      idString = (context != null ? context.id : void 0) != null ? "#" + context.id : '';
       contextString = className != null ? "" + className + idString + ": " : '';
       return console.log("" + contextString + " " + trigger + ": " + item + " (" + depth + ")");
     },

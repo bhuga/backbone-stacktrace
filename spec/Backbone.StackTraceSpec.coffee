@@ -31,16 +31,30 @@ describe 'Backbone.StackTrace', ->
     class ItemClass extends Backbone.Model
 
     @item = new ItemClass id: 15
+
     @item.trigger_infinite = ->
       @trigger 'infinite'
+    @item.trigger_other_infinite = ->
+      @trigger 'other_infinite'
 
     @item.on 'infinite', ->
+      @trigger_other_infinite()
+
+    @item.on 'other_infinite', ->
       @trigger_infinite()
 
     @item.spy = ->
 
     @item.on 'works', ->
       @spy()
+
+    class ItemView extends Backbone.View
+      el: '#test'
+
+    @view = new ItemView model: @item
+
+    @view.on 'infinite', ->
+      @trigger 'infinite'
 
   it 'should exist', ->
     expect(window.Backbone.StackTrace?).toEqual true
@@ -54,5 +68,11 @@ describe 'Backbone.StackTrace', ->
     item = @item
     expect( ->
       item.trigger 'infinite'
+    ).toThrowMessageMatching(/Backbone.StackTrace/)
+
+  it 'should identify the model of a view', ->
+    view = @view
+    expect( ->
+      view.trigger 'infinite'
     ).toThrowMessageMatching(/Backbone.StackTrace/)
 

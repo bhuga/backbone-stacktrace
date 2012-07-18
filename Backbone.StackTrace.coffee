@@ -7,12 +7,10 @@ window.Backbone.StackTrace =
   oldtrigger: Backbone.Events.trigger
 
   logString: (item, depth, trigger, context) ->
-    className = id = null
-    if context? && context.constructor?
-      matches = className = context.constructor.toString().match /function\s+(\w+)/
-      className = matches[1]
+    matches = context?.constructor?.toString()?.match /function\s+(\w+)/
+    className = if matches? then matches[1] else undefined
 
-    idString = if context? && context.id? then "##{context.id}" else ''
+    idString = if context?.id? then "##{context.id}" else ''
 
     contextString = if className? then "#{className}#{idString}: " else ''
 
